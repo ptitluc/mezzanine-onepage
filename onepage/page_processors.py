@@ -9,7 +9,7 @@ def opd_processor(request, page):
     
     """
     subpages = []
-    for page in page.children.all():
+    for page in page.children.published():
         subpage = page.get_content_model()
         if isinstance(subpage, PageInPage):
             subpages.append(subpage)
