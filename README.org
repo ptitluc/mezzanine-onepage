@@ -1,0 +1,14 @@
+* mezzanine-onepage
+One-Page design helper for Mezzanine.
+
+** overview
+Some times you need to publish a shiny super cool one-page site on top of nifty bleeding edge JS and SASS technologies.
+But you still want your users able to manage their content as usual trough Mezzanine interface, i.e. let them add sections as it was pages.
+
+This micro app provide shortcuts to add content to a one-page designed page, as it was a Mezzanine Page too.
+The Only difference is that "subpage" slug will be "parent#subpage" instead of "parent/subpage".
+
+** Usage
+
+- add a container page, wich can contain some rich text or not (two models) ;
+- add your pages under it, using the "rich text page in one-page" type.
