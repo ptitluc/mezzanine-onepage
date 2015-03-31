@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='mezzanine-onepage',
-      version='0.0.1',
+      version='0.0.2',
       description='one-page design helper for Mezzanine',
       url='http://github.com/lucmilland/mezzanine-onepage',
       author='Luc Milland',
