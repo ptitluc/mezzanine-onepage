@@ -12,7 +12,7 @@ The Only difference is that "subpage" slug will be "parent#subpage" instead of "
 
 1. Either clone this repository and copy the "onepage" directory in your Mezzanine project, or use pip :
 
- ~pip install git+https://github.com/lucmilland/mezzanine-onepage~
+ : pip install git+https://github.com/lucmilland/mezzanine-onepage
 
 2. edit your =settings.py= to add ~onepage~ to your ~INSTALLED_APPS~ .
 
