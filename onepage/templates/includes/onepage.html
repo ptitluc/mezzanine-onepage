@@ -1,0 +1,13 @@
+{% load onepage_tags %}
+
+
+{% if subpages %}
+  <div class="subpages-container">
+    {% for page in subpages %}
+    <div>
+      {% render_in_place page %}
+    </div>
+    {% include_subpages page %}
+{% endfor %}
+  </div>
+{% endif %}
