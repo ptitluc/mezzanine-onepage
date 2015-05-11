@@ -14,7 +14,7 @@ def include_subpages(context, page=None):
     include children pages in the template (usefull for One Page Design).
     """
     page = page or context['page']
-    subpages = page.children.filter(in_opd=True)
+    subpages = page.children.filter(in_opd=True).order_by("_order")
     context['subpages'] = subpages
     return context
 
