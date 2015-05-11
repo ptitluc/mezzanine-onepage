@@ -1,31 +1,65 @@
+from __future__ import unicode_literals
+
+from django.shortcuts import redirect, render
+from django.template import RequestContext
+
+from mezzanine.conf import settings
+from mezzanine.forms.forms import FormForForm
+from mezzanine.forms.models import Form
+from mezzanine.forms.page_processors import format_value
+from mezzanine.forms.signals import form_invalid, form_valid
 from mezzanine.pages.page_processors import processor_for
-from .models import PageForPages, RichTextPageForPages, PageInPage
+from mezzanine.utils.email import split_addresses, send_mail_template
+from mezzanine.utils.views import is_spam
 
-def opd_processor(request, page):
+
+# adaptated from Josh Cartmell's Gist : https://gist.github.com/joshcartme/5130702
+@processor_for(Form)
+def ajax_form_processor(request, page):
     """
-    processor for "One-page design" container pages,
-    which means instances of PageForPages and RichTextPageForPages
-    classes.
-    
+    Handle a Mezzanine form submissions if and only if the request
+    is ajax, otherwise the default processor will run.
     """
-    subpages = []
-    for page in page.children.published():
-        subpage = page.get_content_model()
-        if isinstance(subpage, PageInPage):
-            subpages.append(subpage)
-    return {"subpages": subpages, "page": page, "request": request}
-
-@processor_for(PageForPages)
-def simple_opd_processor(request, page):
-    return opd_processor(request, page)
-
-@processor_for(RichTextPageForPages)
-def rich_opd_processor(request, page):
-    return opd_processor(request, page)
-
-@processor_for(PageInPage)
-def dumb_processor(request, page):
-    # We don't need no processing, since it has
-    # been handled by OnePageDesign processor.
-    pass
+    if request.is_ajax():
+        form = FormForForm(page.form, RequestContext(request),
+                           request.POST or None, request.FILES or None)
+        if form.is_valid():
+            form.save()
+            url = page.get_absolute_url() + "?sent=1"
+            if is_spam(request, form, url):
+                return redirect(url)
+            attachments = []
+            for f in form.files.values():
+                f.seek(0)
+                attachments.append((f.name, f.read()))
+            entry = form.save()
+            subject = page.form.email_subject
+            if not subject:
+                subject = "%s - %s" % (page.form.title, entry.entry_time)
+            fields = [(v.label, format_value(form.cleaned_data[k]))
+                      for (k, v) in form.fields.items()]
+            context = {
+                "fields": fields,
+                "message": page.form.email_message,
+                "request": request,
+            }
+            email_from = page.form.email_from or settings.DEFAULT_FROM_EMAIL
+            email_to = form.email_to()
+            if email_to and page.form.send_email:
+                send_mail_template(subject, "email/form_response", email_from,
+                                   email_to, context)
+            headers = None
+            if email_to:
+                # Add the email entered as a Reply-To header
+                headers = {'Reply-To': email_to}
+            email_copies = split_addresses(page.form.email_copies)
+            if email_copies:
+                send_mail_template(subject, "email/form_response_copies",
+                                   email_from, email_copies, context,
+                                   attachments=attachments, headers=headers)
+            form_valid.send(sender=request, form=form, entry=entry)
+            return render(request, 'includes/form_content_only.html', {'form': form, 'ok': True})
+        else:
+            form_invalid.send(sender=request, form=form)
+            return  render(request, 'includes/form_content_only.html', {'form': form})
 

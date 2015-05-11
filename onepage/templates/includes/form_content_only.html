@@ -1,0 +1,37 @@
+{% load mezzanine_tags onepage_tags %}
+
+{% with page|get_html_id as html_id %}
+<div id="{{ html_id }}-block">
+  {% editable page.form.title %}
+    <header><h1>{{page.title|title|safe}}</h1></header>
+  {% endeditable %}
+  {% if ok %}
+    {% editable page.form.response %}
+      {{ page.form.response|richtext_filters|safe }}
+    {% endeditable %}
+  {% else %}
+    {% with page.form as page_form %}
+      {% editable page_form.content %}
+        {{ page_form.content|richtext_filters|safe }}
+      {% endeditable %}
+    {% endwith %}
+  {% errors_for form %}
+  <form class="mezzanine-form"  method="post"{% if form.is_multipart %} enctype="multipart/form-data"{% endif %}>
+    {% fields_for form %}
+  </form>
+  <button class="btn" id="{{ html_id }}__btn">{{ page.form.button_text }}</button>
+ {% endif %}
+</div>
+    <script>
+    $("#{{ html_id }}__btn").click(function() {
+	$.ajax({
+	    type: "POST",
+	    url: "{{ page.get_absolute_url }}",
+	    data: $('form.mezzanine-form').serialize(),
+	    success: function(resp) {
+		$("#{{ html_id }}-block").replaceWith("<div id={{ html_id }}-block'>"+resp+"</div>");
+	    }
+	});
+    });
+</script>
+{% endwith %}
