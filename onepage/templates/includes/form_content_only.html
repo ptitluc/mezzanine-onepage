@@ -2,9 +2,6 @@
 
 {% with page|get_html_id as html_id %}
 <div id="{{ html_id }}-block">
-  {% editable page.form.title %}
-    <header><h1>{{page.title|title|safe}}</h1></header>
-  {% endeditable %}
   {% if ok %}
     {% editable page.form.response %}
       {{ page.form.response|richtext_filters|safe }}

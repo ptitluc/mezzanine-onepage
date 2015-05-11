@@ -1,9 +1,12 @@
-{% load onepage_tags %}
+{% load onepage_tags mezzanine_tags %}
 
 {% if subpages %}
   <div class="subpages-container">
     {% for page in subpages %}
     <section id="{{ page|get_html_id }}">
+  {% editable page.title %}
+    <header><h1>{{page.title|title|safe}}</h1></header>
+  {% endeditable %}
       {% render_in_place page request %}
     </section>
     {% include_subpages page %}
