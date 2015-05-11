@@ -1,0 +1,8 @@
+
+{% load mezzanine_tags %}
+
+<div>
+{% editable page.richtextpage.content %}
+{{ page.richtextpage.content|richtext_filters|safe }}
+{% endeditable %}
+</div>

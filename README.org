@@ -1,12 +1,18 @@
 * mezzanine-onepage
 One-Page design helper for Mezzanine.
 
+** disclaimer
+This is some beta and only partially tested bits of code, use it only if you understand how it is suppose to work. Bug reports, comments and pull requests are welcome !
+
 ** overview
 Some times you need to publish a shiny super cool one-page site on top of nifty bleeding edge JS and SASS technologies.
 But you still want your users able to manage their content as usual trough Mezzanine interface, i.e. let them add sections as it was pages.
 
-This micro app provide shortcuts to add content to a one-page designed page, as it was a Mezzanine Page too.
-The Only difference is that "subpage" slug will be "parent#subpage" instead of "parent/subpage".
+This micro app provides a way to declare a page as being part of a "one page" design tree. When doing so, the page content is added to the parent's content as an html 5 section with slugged ~page.title~ as html id.
+
+This works for ~RichTextPage~, ~Form~ and ~Gallery~. Everything can be nested as usual and each page can still be accessed with its slug as before.
+
+Forms are handled by a little bit of ajax and a custom page processor.
 
 ** Installation
 
@@ -16,9 +22,26 @@ The Only difference is that "subpage" slug will be "parent#subpage" instead of "
 
 2. edit your =settings.py= to add ~onepage~ to your ~INSTALLED_APPS~ .
 
+3. still in =settings.py=, add the required ~in_opd~ extra model field :
+
+#+BEGIN_SRC python
+EXTRA_MODEL_FIELDS = (
+    (
+        "mezzanine.pages.models.Page.in_opd",
+        "BooleanField",
+        ("In a One-page design",),
+        {"default": False},
+    ),
+)
+#+END_SRC
+
 That's all, you're done.
 
 ** Usage
 
-- add a container page, wich can contain some rich text or not (two models) ;
-- add your pages under it, using the "rich text page in one-page" type.
+For each page that you want to include in it's parent, just check the ~in a One-Page design~ box in the admin.
+
+** Customize
+
+Customizing ~templates/includes/*.html~ and ~templates/pages/page.html~ should provide you an easy way to adapt the default behaviour to your need ;)
+

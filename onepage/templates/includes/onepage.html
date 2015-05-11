@@ -1,0 +1,12 @@
+{% load onepage_tags %}
+
+{% if subpages %}
+  <div class="subpages-container">
+    {% for page in subpages %}
+    <section id="{{ page|get_html_id }}">
+      {% render_in_place page request %}
+    </section>
+    {% include_subpages page %}
+{% endfor %}
+  </div>
+{% endif %}
