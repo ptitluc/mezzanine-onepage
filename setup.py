@@ -12,5 +12,6 @@ setup(name='mezzanine-onepage',
       zip_safe=False,
       package_data={'onepage' : ['templates/pages/*.html',
                                  'templates/includes/*.html',
-                                 'templatetags/*.py']},
+                                 'templatetags/*.py',
+                                 'migrations/*.py']},
       )
