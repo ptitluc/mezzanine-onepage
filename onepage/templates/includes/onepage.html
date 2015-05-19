@@ -4,12 +4,12 @@
   <div class="subpages-container">
     {% for page in subpages %}
     <section id="{{ page|get_html_id }}">
-  {% editable page.title %}
-    <header><h1>{{page.title|title|safe}}</h1></header>
-  {% endeditable %}
+      {% editable page.title %}
+      <header><h1>{{page.title|title|safe}}</h1></header>
+      {% endeditable %}
       {% render_in_place page request %}
+      {% include_subpages page %}
     </section>
-    {% include_subpages page %}
 {% endfor %}
   </div>
 {% endif %}
