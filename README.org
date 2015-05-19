@@ -34,10 +34,9 @@ Forms are handled by a little bit of ajax and a custom page processor.
  )
  #+END_SRC
 
-4. migrate your database if needed :
+4. migrate your database if still not done :
  #+BEGIN_EXAMPLE
- python manage.py schemamigration pages --auto
- python manage.py migrate pages
+ python manage.py migrate onepage
  #+END_EXAMPLE
 
 That's all, you're done.
