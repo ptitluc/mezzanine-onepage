@@ -23,17 +23,21 @@ Forms are handled by a little bit of ajax and a custom page processor.
 2. edit your =settings.py= to add ~onepage~ to your ~INSTALLED_APPS~ .
 
 3. still in =settings.py=, add the required ~in_opd~ extra model field :
+ #+BEGIN_SRC python
+ EXTRA_MODEL_FIELDS = (
+     (
+         "mezzanine.pages.models.Page.in_opd",
+         "BooleanField",
+         ("In a One-page design",),
+         {"default": False},
+     ),
+ )
+ #+END_SRC
 
-#+BEGIN_SRC python
-EXTRA_MODEL_FIELDS = (
-    (
-        "mezzanine.pages.models.Page.in_opd",
-        "BooleanField",
-        ("In a One-page design",),
-        {"default": False},
-    ),
-)
-#+END_SRC
+4. migrate your database if still not done :
+ #+BEGIN_EXAMPLE
+ python manage.py migrate onepage
+ #+END_EXAMPLE
 
 That's all, you're done.
 
