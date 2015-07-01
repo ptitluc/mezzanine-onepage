@@ -20,7 +20,7 @@ def include_subpages(context, page=None):
         subpages = page.children.published(for_user=user).filter(in_opd=True).order_by("_order")
     except KeyError:
         # we are at site root
-        subpages = Page.objects.published(for_user=user).filter(parent_id=None)
+        subpages = Page.objects.published(for_user=user).filter(parent_id=None).order_by("_order")
     context['subpages'] = subpages
     return context
 
