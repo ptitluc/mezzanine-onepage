@@ -14,12 +14,13 @@ def include_subpages(context, page=None):
     """
     include children pages in the template (usefull for One Page Design).
     """
+    user = context['user']
     try:
         page = page or context['page']
-        subpages = page.children.filter(in_opd=True).order_by("_order")
+        subpages = page.children.published(for_user=user).filter(in_opd=True).order_by("_order")
     except KeyError:
         # we are at site root
-        subpages = Page.objects.filter(parent_id=None)
+        subpages = Page.objects.published(for_user=user).filter(parent_id=None)
     context['subpages'] = subpages
     return context
 
