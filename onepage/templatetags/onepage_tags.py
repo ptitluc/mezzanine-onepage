@@ -2,7 +2,7 @@ from django.template import Context, RequestContext
 from django.template.loader import get_template
 
 from mezzanine import template
-form mezzanine.pages.models import Page
+from mezzanine.pages.models import Page
 from mezzanine.forms.forms import FormForForm
 from mezzanine.utils.urls import slugify
 
