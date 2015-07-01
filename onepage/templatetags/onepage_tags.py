@@ -2,6 +2,7 @@ from django.template import Context, RequestContext
 from django.template.loader import get_template
 
 from mezzanine import template
+form mezzanine.pages.models import Page
 from mezzanine.forms.forms import FormForForm
 from mezzanine.utils.urls import slugify
 
@@ -13,8 +14,13 @@ def include_subpages(context, page=None):
     """
     include children pages in the template (usefull for One Page Design).
     """
-    page = page or context['page']
-    subpages = page.children.filter(in_opd=True).order_by("_order")
+    user = context['user']
+    try:
+        page = page or context['page']
+        subpages = page.children.published(for_user=user).filter(in_opd=True).order_by("_order")
+    except KeyError:
+        # we are at site root
+        subpages = Page.objects.published(for_user=user).filter(parent_id=None)
     context['subpages'] = subpages
     return context
 
